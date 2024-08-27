@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 # Define the schema view
 schema_view = get_schema_view(
     openapi.Info(
-        title="Operation Management Platform API",
+        title="Project API",
         default_version="v1",
         # description="Operation Management Platform",
         # terms_of_service="https://www.google.com/policies/terms/",
