@@ -1,0 +1,10 @@
+Django
+djangorestframework
+psycopg2-binary
+django-redis
+Pillow
+djangorestframework-simplejwt
+django-filter
+django-email-users
+drf-yasg
+django-ckeditor

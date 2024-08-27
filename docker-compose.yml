@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: project_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    networks:
+      - project_network
+
+  redis:
+    image: redis:latest
+    container_name: project_redis
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - project_network
+
+
+  backend:
+    build: ./backend
+    container_name: project_backend
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - project_network
+
+    environment:
+      - DJANGO_SETTINGS_MODULE=project.settings
+      - POSTGRES_DB=project_db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  project_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.18.0/27
